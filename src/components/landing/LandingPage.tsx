@@ -550,26 +550,27 @@ function AboutHighlightCard({
       style={{
         opacity: visible ? 1 : 0,
         transform: visible ? 'translateY(0)' : 'translateY(18px)',
-        transition: `opacity 0.55s ease ${index * 80}ms, transform 0.55s ease ${index * 80}ms, border-color 0.25s ease, background 0.25s ease`,
+        transition: `opacity 0.55s ease ${index * 80}ms, transform 0.55s ease ${index * 80}ms, border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease`,
       }}
     >
       <div style={{
-        width: 42, height: 42, borderRadius: 8,
+        width: 46, height: 46, borderRadius: 12,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        background: 'rgba(129,140,248,0.12)',
-        border: '1px solid rgba(129,140,248,0.28)',
+        background: 'linear-gradient(135deg, rgba(96,165,250,0.16), rgba(34,211,238,0.12))',
+        border: '1px solid rgba(96,165,250,0.24)',
         color: A, marginBottom: 18,
+        boxShadow: '0 10px 24px rgba(37,99,235,0.10)',
       }}>
         <Icon size={20} strokeWidth={1.8} aria-hidden="true" />
       </div>
       <h3 style={{
         fontFamily: DISP, fontWeight: 700,
-        fontSize: 19, color: TEXT, margin: '0 0 10px',
+        fontSize: 20, color: TEXT, margin: '0 0 10px',
         letterSpacing: 0,
       }}>
         {item.title}
       </h3>
-      <p style={{ color: MUTED, fontSize: 14, lineHeight: 1.65, margin: 0 }}>
+      <p style={{ color: MUTED, fontSize: 14.5, lineHeight: 1.65, margin: 0 }}>
         {item.desc}
       </p>
     </article>
@@ -628,8 +629,8 @@ function AboutSection() {
 
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-          gap: 14,
+          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+          gap: 16,
         }}>
           {ABOUT_HIGHLIGHTS.map((item, index) => (
             <AboutHighlightCard key={item.title} item={item} index={index} visible={vis} />
