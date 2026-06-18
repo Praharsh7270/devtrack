@@ -1,11 +1,7 @@
 "use client";
 
-<<<<<<< HEAD
-import { useEffect, useRef, useState } from "react";
-=======
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
->>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4
 
 interface ShortcutsModalProps {
   isOpen: boolean;
@@ -34,6 +30,7 @@ export default function ShortcutsModal({
   const modalRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const [isMac, setIsMac] = useState(false);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
   const [position, setPosition] = useState<{ top: number; right: number } | null>(null);
   const [mounted, setMounted] = useState(false);
 
@@ -44,10 +41,6 @@ export default function ShortcutsModal({
     }
   }, []);
 
-<<<<<<< HEAD
-   useEffect(() => {
-    if (!isOpen) return;
-=======
   // Recalculate position whenever the modal opens or the window resizes
   useEffect(() => {
     if (!isOpen || !anchorRef?.current) return;
@@ -78,7 +71,9 @@ export default function ShortcutsModal({
       }
       return;
     }
->>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4
+
+    // Store the currently focused element before the modal takes focus
+    previousFocusRef.current = document.activeElement as HTMLElement;
 
      closeBtnRef.current?.focus();
 
@@ -127,14 +122,9 @@ export default function ShortcutsModal({
        document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("touchstart", handleClickOutside);
     };
-<<<<<<< HEAD
-   }, [isOpen, onClose]);
-  if (!isOpen) return null;
-=======
   }, [isOpen, onClose]);
 
   if (!isOpen || !mounted) return null;
->>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4
 
   const style: React.CSSProperties = position
     ? { position: "fixed", top: position.top, right: position.right }
@@ -145,12 +135,8 @@ export default function ShortcutsModal({
       ref={modalRef}
       role="dialog"
       aria-labelledby="shortcuts-title"
-<<<<<<< HEAD
-      className="absolute right-0 top-full z-50 mt-2 w-80 rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-xl"
-=======
       style={{ ...style, zIndex: 9999, width: 320 }}
       className="rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-xl"
->>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4
     >
       <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3">
         <h2

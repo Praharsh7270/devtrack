@@ -3,12 +3,8 @@
 import { useEffect, useRef, useState } from 'react';
 import Image from "next/image";
 import Link from 'next/link';
-<<<<<<< HEAD
-import { Activity, GitPullRequest, Goal, Share2, type LucideIcon } from "lucide-react";
-=======
 import { Activity, GitPullRequest, Goal, Share2, Flame, FolderGit2, LogIn, LayoutDashboard, Target, type LucideIcon } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
->>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4
 
 /* ═══════════════════════════════════════════════════════════
    PUBLIC TYPES
@@ -145,8 +141,6 @@ function Counter({ end, active }: { end: number; active: boolean }) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-<<<<<<< HEAD
-=======
    3D TILT HOOK
    ═══════════════════════════════════════════════════════════ */
 function use3DTilt(aggressiveness = 15) {
@@ -203,7 +197,6 @@ function use3DTilt(aggressiveness = 15) {
 }
 
 /* ═══════════════════════════════════════════════════════════
->>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4
    MOUSE SPOTLIGHT
    ═══════════════════════════════════════════════════════════ */
 function MouseSpotlight() {
@@ -437,8 +430,6 @@ function HeroSection() {
         overflow: 'clip',
       }}
     >
-<<<<<<< HEAD
-=======
       {/* Engineering Grid Texture */}
       <div 
         style={{
@@ -451,7 +442,6 @@ function HeroSection() {
         }}
       />
 
->>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4
       {/* Ambient Animated Background Glow */}
       <div 
         style={{
@@ -513,14 +503,10 @@ function HeroSection() {
             fontSize: 'clamp(40px,6.5vw,82px)', lineHeight: 0.95,
             letterSpacing: '-0.04em', color: TEXT, margin: '0 0 24px',
             animation: 'lndHeroIn 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s both',
-<<<<<<< HEAD
-            textShadow: '0 4px 24px rgba(0,0,0,0.4)',
-=======
             background: 'linear-gradient(180deg, var(--foreground) 0%, color-mix(in srgb, var(--foreground) 70%, transparent) 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             textShadow: '0 4px 24px rgba(0,0,0,0.8)',
->>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4
           }}
         >
           YOUR<br />CODE<br />HAS A<br />
@@ -530,15 +516,9 @@ function HeroSection() {
 
         {/* Tagline — NOW HIGH CONTRAST */}
         <p style={{
-<<<<<<< HEAD
-          fontSize: 'clamp(16px,2vw,18px)', color: MUTED,
-          lineHeight: 1.6, maxWidth: 420, margin: '0 0 36px',
-          fontWeight: 400,
-=======
           fontSize: 'clamp(16px,2vw,18px)', color: 'var(--foreground)',
           lineHeight: 1.6, maxWidth: 420, margin: '0 0 40px',
           fontWeight: 400, letterSpacing: '0.01em', opacity: 0.85,
->>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4
         }}>
           Open-source developer productivity dashboard. Track GitHub streaks,
           PR velocity, and coding goals — automatically.
@@ -587,14 +567,6 @@ function HeroSection() {
         </div>
       </div>
 
-<<<<<<< HEAD
-      {/* Right: bento */}
-      <div style={{ flex: '1 1 340px', display: 'flex', justifyContent: 'center', position: 'relative', zIndex: 2 }}>
-        <BentoGrid />
-=======
-      {/* Right: bento window frame */}
-      <div style={{ flex: '1 1 340px', display: 'flex', flexDirection: 'column',alignItems: 'flex-end', gap: 24, position: 'relative', zIndex: 2 }}>
-        <ThemeToggle />
         <div style={{
           background: 'rgba(255,255,255,0.02)',
           border: '1px solid rgba(255,255,255,0.05)',
@@ -621,8 +593,6 @@ function HeroSection() {
             <BentoGrid />
           </div>
         </div>
->>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4
-      </div>
     </section>
   );
 }
@@ -668,16 +638,14 @@ function AboutHighlightCard({
   visible: boolean;
 }) {
   const Icon = item.icon;
+  const [tiltRef, tiltStyle] = use3DTilt();
 
   return (
     <article
+      ref={tiltRef}
       className="lnd-about-card"
       style={{
         opacity: visible ? 1 : 0,
-<<<<<<< HEAD
-        transform: visible ? 'translateY(0)' : 'translateY(18px)',
-        transition: `opacity 0.55s ease ${index * 80}ms, transform 0.55s ease ${index * 80}ms, border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease`,
-=======
         transformStyle: 'preserve-3d',
         transformOrigin: 'top center',
         transform: visible ? tiltStyle.transform : `perspective(1000px) rotateX(-90deg)`,
@@ -685,7 +653,6 @@ function AboutHighlightCard({
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
         cursor: 'pointer',
->>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4
       }}
     >
       <div style={{
@@ -961,9 +928,6 @@ function FeaturesSection() {
 /* ═══════════════════════════════════════════════════════════
    SETUP SECTION
    ═══════════════════════════════════════════════════════════ */
-<<<<<<< HEAD
-function SetupSection() {
-=======
 const STEPS = [
   { num: '1', title: 'Sign in', desc: 'Authenticate with your GitHub account.', icon: LogIn,href: '/api/auth/signin/github?callbackUrl=/dashboard' },
   { num: '2', title: 'View dashboard', desc: 'See your automatically generated stats.', icon: LayoutDashboard,href: '/dashboard' },
@@ -972,7 +936,6 @@ const STEPS = [
 ];
 
 function HowItWorksSection() {
->>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4
   const [ref, vis] = useScrollReveal(0.2);
   return (
     <section
@@ -997,26 +960,6 @@ function HowItWorksSection() {
         fontFamily: MONO, fontSize: 13, lineHeight: 1.8,
         boxShadow: '0 8px 30px rgba(0,0,0,0.4)',
       }}>
-<<<<<<< HEAD
-        {/* Terminal Header Mock */}
-        <div style={{ display: 'flex', gap: 6, marginBottom: 14 }}>
-          <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#ef4444' }} />
-          <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#f59e0b' }} />
-          <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#10b981' }} />
-        </div>
-        <div style={{ color: '#10b981', fontWeight: 500 }}># start tracking in 30 seconds</div>
-        <div style={{ color: TEXT }}>
-          <span style={{ color: A }}>→</span> sign in at{' '}
-          <span style={{ color: A }}>devtrack.vercel.app</span>
-        </div>
-        <div style={{ color: '#10b981', marginTop: 8, fontWeight: 500 }}># or self-host</div>
-        <div style={{ color: TEXT }}>
-          <span style={{ color: A }}>$</span> git clone github.com/…/devtrack
-        </div>
-        <div style={{ color: TEXT }}>
-          <span style={{ color: A }}>$</span> npm install && npm run dev
-        </div>
-=======
         {STEPS.map((step, i) => {
           const Icon = step.icon;
           return (
@@ -1032,7 +975,6 @@ function HowItWorksSection() {
           </Link>
           );
         })}
->>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4
       </div>
 
       <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
@@ -1235,7 +1177,7 @@ export default function LandingPage({ repoStats }: { repoStats: RepoStats }) {
       <StatsSection stats={repoStats} />
       <FeaturesSection />
       <ContributeSection stats={repoStats} />
-      <SetupSection />
+      <HowItWorksSection />
     </div>
   );
 }

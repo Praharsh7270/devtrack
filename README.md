@@ -173,7 +173,7 @@ To deploy your own instance, see the **[Self-Hosting Guide](./docs/self-hosting.
 ```bash
 git clone https://github.com/Priyanshu-byte-coder/devtrack.git
 cd devtrack
-npm install
+pnpm install
 ```
 
 **2. Set up Supabase**
@@ -219,7 +219,7 @@ cp .env.example .env.local
 **5. Run locally**
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) and sign in with GitHub.

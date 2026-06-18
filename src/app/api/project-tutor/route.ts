@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
 
     if (!repoUrl) return NextResponse.json({ error: "repo URL required" }, { status: 400 });
 
-    const match = repoUrl.match(/github\.com\/([^/]+)\/([^/]+)/);
+    const match = repoUrl.match(/github\.com\/([^/]+)\/([^/]+?)(?:\.git|\/|$)/);
     if (!match) return NextResponse.json({ error: "Invalid GitHub URL" }, { status: 400 });
 
     const [, owner, repo] = match;
@@ -97,7 +97,7 @@ ${context}
 Format your response with clear headings using markdown.`;
 
       const analysis = await callGroq(prompt);
-      return NextResponse.json({ analysis, techStack, description: repoData.description });
+      return NextResponse.json({ analysis, techStack, description });
     }
 
     if (action === "questions") {
@@ -124,7 +124,7 @@ Return ONLY the JSON, no other text.`;
 
       const raw = await callGroq(prompt);
       try {
-        const clean = raw.replace(/```json|```/g, "").trim();
+        const clean = (raw || "").replace(/```json|```/g, "").trim();
         const questions = JSON.parse(clean);
         return NextResponse.json({ questions });
       } catch {

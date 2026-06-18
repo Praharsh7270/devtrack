@@ -177,11 +177,16 @@ async function checkUpstashLimit(
     if (!response.ok) { return null; }
 
     const data = await response.json();
-    const [allowedFlag, currentCount] = data.result as [number, number];
+
+    if (!data || !Array.isArray(data.result)) {
+      return null;
+    }
+
+    const [allowedFlag, currentCount] = data.result;
     return {
       allowed: allowedFlag === 1,
       limit,
-      remaining: Math.max(limit - currentCount, 0),
+      remaining: Math.max(limit - (Number(currentCount) || 0), 0),
       reset,
     };
   } catch (error) {

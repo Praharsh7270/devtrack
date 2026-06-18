@@ -178,7 +178,7 @@ async function processUser(
   // ── Build unsubscribe URL ─────────────────────────────────────────────────
   const unsubscribeUrl = user.id
     ? buildUnsubscribeUrl(user.id)
-    : `${(process.env.NEXTAUTH_URL ?? "").replace(/\/$/, "")}/settings`;
+    : `${(process.env.NEXTAUTH_URL || "http://localhost:3000").replace(/\/$/, "")}/settings`;
 
   // ── Render email ──────────────────────────────────────────────────────────
   const emailData = {

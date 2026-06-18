@@ -101,13 +101,8 @@ export default function AppNavbar() {
           </span>
         </Link>
 
-<<<<<<< HEAD
-        {/* Desktop nav */}
-        <nav className="hidden items-center gap-1 md:flex rounded-full border border-white/5 bg-white/[0.02] px-2 py-1.5 shadow-sm" aria-label="Main navigation">
-=======
         {/* Desktop nav - Includes links to Dashboard, Streaks, Pull Requests, Goals, etc. */}
         <nav className="hidden items-center gap-1 md:flex rounded-full border border-white/5 bg-white/[0.02] px-2 py-1.5 shadow-sm" aria-label={t("main")}>
->>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4
           {navItems.map((item) => {
             const active = isActivePath(pathname, item.href);
             return (
@@ -136,12 +131,8 @@ export default function AppNavbar() {
         {/* Desktop right */}
         <div className="hidden items-center gap-4 md:flex">
           {/* Show ThemeToggle in navbar except on dashboard, where DashboardHeader provides it */}
-<<<<<<< HEAD
-          {!isDashboardRoute && <ThemeToggle />}
-=======
           {!isDashboardRoute && <ThemeToggle variant="compact" />}
           {/* Auth state - Shows user identity and settings when logged in, or generic sign-in when logged out */}
->>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4
           {isAuthenticated ? (
             !isDashboardRoute && (
               <div className="flex items-center gap-4 border-l border-white/10 pl-4">

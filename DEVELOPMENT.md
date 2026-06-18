@@ -8,13 +8,8 @@ Everything you need to run DevTrack locally from scratch in under 10 minutes.
 
 | Tool | Version | Check |
 |------|---------|-------|
-<<<<<<< HEAD
-| Node.js | >= 18 | `node -v` |
-| npm | >= 9 | `npm -v` |
-=======
 | Node.js | >= 20 | `node -v` |
 | pnpm | >= 9 | `pnpm -v` |
->>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4
 | Git | any | `git --version` |
 
 You also need free accounts on:
@@ -391,7 +386,7 @@ A simple rule: append the new migration SQL into `supabase/schema.sql` (includin
 * **Solution:** Confirm your `.env.local` file contains `NEXT_PUBLIC_SUPABASE_URL` set to your Supabase project's API URL (e.g., `https://xyz.supabase.co`). You can retrieve this under **Project Settings > API** in the Supabase Dashboard.
 
 ### 2. Incorrect `NEXT_PUBLIC_SUPABASE_ANON_KEY` or `SUPABASE_SERVICE_ROLE_KEY`
-* **Symptom:** API requests return `401 Unauthorized` or `403 Forbidden` errors, or the database fails to update upon user sign-in with `signIn: supabaseAdmin is not configured` logged to the console.
+* **Symptom:** API requests return `401 Unauthorized` or `403 Forbidden` errors, or the database fails to update upon user sign-in with `signIn: supabaseAdmin is not configured` logged to the terminal.
 * **Likely Cause:** The anon public key or service role secret key is missing, truncated, or set to placeholder values in `.env.local`.
 * **Solution:** Navigate to **Project Settings > API** in the Supabase Dashboard. Copy the `anon` (public) key and the `service_role` (secret) key, and paste them exactly as `NEXT_PUBLIC_SUPABASE_ANON_KEY` and `SUPABASE_SERVICE_ROLE_KEY` in `.env.local`.
 
@@ -421,7 +416,7 @@ A simple rule: append the new migration SQL into `supabase/schema.sql` (includin
 * **Symptom:** Changes to environment variables in `.env.local` are not recognized, or values behave as if they are missing or outdated.
 * **Likely Cause:** The Next.js development server has not been restarted since the environment variables were modified.
 * **Solution:** Stop the active development server using `Ctrl + C` and start it again using `npm run dev`. Ensure the file is named exactly `.env.local` (not `.env` or `.env.local.txt`) and is in the project root.
-
+* **Action:** Run `pnpm dev`.
 ### 7. Port conflicts while running the development server
 * **Symptom:** Starting the server fails with an `EADDRINUSE: address already in use :::3000` error, or the app is served on a fallback port like `3001`.
 * **Likely Cause:** Another server or process is already listening on port `3000`.
@@ -440,10 +435,10 @@ A simple rule: append the new migration SQL into `supabase/schema.sql` (includin
 * **Symptom:** Need to confirm that your local environment, database schema, and OAuth are completely and correctly integrated.
 * **Likely Cause:** Verifying the initial setup configuration.
 * **Solution:**
-  1. **Run Dev Server:** Start the server with `npm run dev` and ensure there are no startup errors in the console.
+  1. **Run Dev Server:** Start the server with `pnpm dev` and ensure there are no startup errors in the console.
   2. **Page Load:** Open `http://localhost:3000` in your browser and verify the landing page displays correctly.
   3. **Sign In Check:** Click **Sign in with GitHub**, authorize the application, and verify that you are successfully redirected to the dashboard (`http://localhost:3000/dashboard`).
-  4. **Lint and Type-Check:** Run `npm run lint && npm run type-check` in your terminal and verify both commands pass without errors.
+  4. **Lint and Type-Check:** Run `pnpm lint && pnpm type-check` in your terminal and verify both commands pass without errors.
 
 ---
 
