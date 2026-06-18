@@ -2,7 +2,7 @@
 "use client";
 
 import ThemePresetPicker from "@/components/ThemePresetPicker";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { redirect, useSearchParams } from "next/navigation";
 import { useHeatmapTheme } from "@/hooks/useHeatmapTheme";
@@ -13,6 +13,13 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import WebhookManager from "@/components/webhook/WebhookManager";
+<<<<<<< HEAD
+=======
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useLocale, useTranslations } from "next-intl";
+import { localeMetadata, locales, type AppLocale } from "@/i18n/config";
+>>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4
 
 // ── Max length for the profile bio ──────────────────────────────────────────
 const BIO_MAX = 160;
@@ -186,6 +193,15 @@ function SettingsPageContent() {
   const [testingDiscord, setTestingDiscord] = useState(false);
   const [discordMutedUntil, setDiscordMutedUntil] = useState<string | null>(null);
   const [muteDuration, setMuteDuration] = useState<number>(1);
+<<<<<<< HEAD
+=======
+  const copyResetTimerRef = useRef<number | null>(null);
+
+  // GitHub Orgs States
+  const [orgAccounts, setOrgAccounts] = useState<any[]>([]);
+  const [orgsConfig, setOrgsConfig] = useState<Record<string, boolean>>({});
+  const [loadingOrgs, setLoadingOrgs] = useState(true);
+>>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4
   const [isDirty, setIsDirty] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [pendingPath, setPendingPath] = useState<string | null>(null);
@@ -200,6 +216,15 @@ function SettingsPageContent() {
     () =>
       getStatusMessage(searchParams.get("success"), searchParams.get("error")),
     [searchParams]
+  );
+
+  const publicProfileUsername = session?.githubLogin ?? settings?.github_login ?? "";
+  const profileUrl = useMemo(
+    () =>
+      publicProfileUsername
+        ? `https://devtrack-delta.vercel.app/u/${publicProfileUsername}`
+        : "",
+    [publicProfileUsername]
   );
 
   const { theme, setTheme } = useHeatmapTheme();
@@ -651,15 +676,28 @@ function SettingsPageContent() {
   };
 
   const copyShareLink = () => {
-    if (!settings) return;
-    const link = `${window.location.origin}/u/${settings.github_login}`;
-    navigator.clipboard.writeText(link).then(() => {
+    if (!profileUrl) return;
+
+    if (copyResetTimerRef.current) {
+      window.clearTimeout(copyResetTimerRef.current);
+      copyResetTimerRef.current = null;
+    }
+
+    if (!navigator.clipboard?.writeText) {
+      toast.error("Clipboard access is not available in this browser.");
+      return;
+    }
+
+    navigator.clipboard.writeText(profileUrl).then(() => {
       setCopied(true);
       toast.success("Link copied successfully!");
-      setTimeout(() => setCopied(false), 2000);
+      copyResetTimerRef.current = window.setTimeout(() => {
+        setCopied(false);
+        copyResetTimerRef.current = null;
+      }, 2000);
     }).catch((err) => {
       console.error("Clipboard copy failed:", err);
-      toast.error("Failed to copy link");
+      toast.error("Failed to copy profile URL");
     });
   };
 
@@ -794,7 +832,7 @@ function SettingsPageContent() {
 
         {/* Public Profile Section */}
         <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
-          <div className="flex items-start justify-between mb-6 gap-4">
+          <div className="flex items-start justify-between mb-2 gap-4">
             <div>
               <h2 className="text-xl font-semibold text-[var(--card-foreground)]">
                 Public Profile
@@ -830,34 +868,44 @@ function SettingsPageContent() {
           </div>
 
           {/* Share Link Section */}
-          {settings.is_public && (
-            <div className="mt-6 pt-6 border-t border-[var(--border)]">
-              <h3 className="text-sm font-semibold text-[var(--card-foreground)] mb-3">
-                Share Your Profile
-              </h3>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={`${window.location.origin}/u/${settings.github_login}`}
-                  readOnly
-                  className="flex-1 rounded-lg border border-[var(--border)] bg-[var(--control)] px-4 py-2 text-sm text-[var(--card-foreground)]"
-                />
-                <button
-                  type="button"
-                  onClick={copyShareLink}
-                  aria-label="Copy profile URL"
-                  className="px-4 py-2 rounded-lg bg-[var(--accent)] text-[var(--accent-foreground)] text-sm font-medium hover:opacity-90 transition-opacity"
-                >
-                  {copied ? "Copied!" : "Copy"}
-                </button>
-              </div>
+          <div>
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+              <Badge
+                variant={settings.is_public ? "success" : "secondary"}
+                className="px-3 py-1 text-[11px] uppercase tracking-wide"
+              >
+                {settings.is_public ? "Public" : "Private"}
+              </Badge>
               {settings.public_since && (
-                <p className="mt-3 text-xs text-[var(--muted-foreground)]">
+                <p className="text-xs text-[var(--muted-foreground)] sm:text-right">
                   Public since {new Date(settings.public_since).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
                 </p>
               )}
             </div>
-          )}
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <input
+                type="text"
+                value={profileUrl}
+                readOnly
+                aria-label="Public profile URL"
+                className="min-w-0 flex-1 rounded-xl border border-[var(--border)] bg-[var(--control)] px-4 py-2 text-sm text-[var(--card-foreground)] outline-none transition-colors focus:border-[var(--accent)]"
+              />
+              <Button
+                type="button"
+                onClick={copyShareLink}
+                variant="secondary"
+                className="w-full sm:w-auto"
+                aria-label="Copy public profile URL"
+              >
+                {copied ? "Copied!" : "Copy"}
+              </Button>
+            </div>
+            {!settings.is_public && (
+              <p className="mt-3 text-sm text-[var(--muted-foreground)]">
+                Your profile is currently private. Enable Public Profile to allow others to view this link.
+              </p>
+            )}
+          </div>
 
           {/* Weekly Goals on Profile toggle */}
           {settings.is_public && (

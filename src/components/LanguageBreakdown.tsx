@@ -2,6 +2,18 @@
 
 import { useEffect, useState } from "react";
 import { useAccount } from "@/components/AccountContext";
+<<<<<<< HEAD
+=======
+import { useDashboardWidgetA11y } from "@/components/dashboard/DashboardWidgetA11yContext";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  ResponsiveContainer,
+  type TooltipProps,
+} from "recharts";
+>>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4
 
 interface Language {
   name: string;
@@ -48,6 +60,22 @@ export default function LanguageBreakdown() {
   const [languages, setLanguages] = useState<Language[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { setSummary, setIsUpdating } = useDashboardWidgetA11y("language-breakdown");
+
+  useEffect(() => {
+    setIsUpdating(loading);
+  }, [loading, setIsUpdating]);
+
+  useEffect(() => {
+    if (languages.length === 0) {
+      setSummary(null);
+      return;
+    }
+    const top = languages[0];
+    setSummary(
+      `Top language: ${top.name}, ${top.percentage}%. ${languages.length} language${languages.length === 1 ? "" : "s"} tracked.`,
+    );
+  }, [languages, setSummary]);
 
   useEffect(() => {
     setLoading(true);
@@ -139,9 +167,21 @@ export default function LanguageBreakdown() {
                 key={lang.name}
                 className="flex min-w-0 max-w-full basis-full items-center gap-2 text-sm sm:basis-[calc(50%-0.5rem)]"
               >
+<<<<<<< HEAD
                 <LanguageDot 
                   color={lang.name === "Other" ? "var(--control)" : getColor(lang.name)}
                   label={`${lang.name}: ${lang.percentage}%`}
+=======
+                <span
+                  className="shrink-0 rounded-full"
+                  style={{
+                    width: "0.5rem",
+                    height: "0.5rem",
+                    backgroundColor: getColor(lang.name),
+                  }}
+                  role="img"
+                  aria-label={lang.name}
+>>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4
                 />
                 <span className="min-w-0 flex-1 truncate text-[var(--card-foreground)]">
                   {lang.name}

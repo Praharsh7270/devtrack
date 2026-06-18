@@ -28,16 +28,19 @@ const LANGUAGE_REPO_LIMIT = 8;
 
 const memoryRateLimits = new Map<string, RateLimitEntry>();
 
+<<<<<<< HEAD
 // In-process build promise to dedupe concurrent builds in the same Node
 // process when an external cache/lock (Upstash) is not configured.
 let _inProcessLeaderboardBuild: Promise<import("@/lib/leaderboard").LeaderboardPayload | null> | null = null;
+=======
+type RateLimitResult = { allowed: boolean; retryAfter?: number };
+
+>>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4
 function getRateLimitKey(req: NextRequest): string {
   return req.ip ?? req.headers.get("x-real-ip") ?? "unknown";
 }
 
-function checkMemoryRateLimit(
-  ip: string
-): { allowed: boolean; retryAfter?: number } {
+function checkMemoryRateLimit(ip: string): RateLimitResult {
   const now = Date.now();
   pruneExpiredRateLimits(memoryRateLimits, now);
   const record = memoryRateLimits.get(ip);
@@ -58,9 +61,7 @@ function checkMemoryRateLimit(
   };
 }
 
-async function checkRateLimit(
-  ip: string
-): Promise<{ allowed: boolean; retryAfter?: number }> {
+async function checkRateLimit(ip: string): Promise<RateLimitResult> {
   if (getUpstashConfig()) {
     return upstashRateLimitFixedWindow({
       key: `leaderboard-rate-limit:${ip}`,

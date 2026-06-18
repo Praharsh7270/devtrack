@@ -21,7 +21,7 @@ import {
 import { supabaseAdmin } from "@/lib/supabase";
 import { resolveAppUser } from "@/lib/resolve-user";
 import { normalizeGitHubUsername } from "@/lib/validate-github-username";
-
+import { logError } from "@/lib/error-handler";
 // ─── GitHub API Rate Limiting ──────────────────────────────────────────────────
 // Unauthenticated requests: 60 req/hr (shared per IP).
 // Authenticated requests (OAuth token or PAT): 5,000 req/hr per user.
@@ -391,6 +391,44 @@ export async function GET(req: NextRequest) {
   }
 
   // Compare mode path: explicitly fetch contributions for a target username.
+<<<<<<< HEAD
+=======
+  let orgName: string | null = null;
+  let targetAccountId: string | null = accountId;
+
+  if (accountId && accountId.startsWith("org:")) {
+    const parts = accountId.split(":");
+    targetAccountId = parts[1];
+    orgName = parts[2];
+    if (!targetAccountId || !orgName) {
+      return Response.json({ error: "Invalid organization account ID" }, { status: 400 });
+    }
+  }
+
+  // Load excluded organizations config
+  let excludedOrgs: string[] = [];
+  if (isSupabaseAdminAvailable && session.githubId) {
+    try {
+      const { data: dbUser } = await supabaseAdmin
+        .from("users")
+        .select("organizations_config")
+        .eq("github_id", session.githubId)
+        .single();
+
+      const orgsConfig = (dbUser?.organizations_config || {}) as Record<string, boolean>;
+      excludedOrgs = Object.entries(orgsConfig)
+        .filter(([_, enabled]) => enabled === false)
+        .map(([org]) => org);
+    } catch (error) {
+      logError(error, {
+        endpoint: "/api/metrics/contributions",
+        operation: "loadExcludedOrgsConfig",
+      });
+    }
+  }
+
+  // Compare mode path: explicitly fetch contributions for a target username.
+>>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4
   if (username) {
     try {
       const result = await fetchContributionsForAccount(

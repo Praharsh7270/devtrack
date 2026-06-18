@@ -1,5 +1,6 @@
 'use client';
 
+<<<<<<< HEAD
 import { useEffect, useRef, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import type { RoomMessage } from '@/types/rooms';
@@ -10,21 +11,37 @@ const realtimeClient = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
+=======
+import { useEffect, useRef } from 'react';
+import { supabaseBrowser } from "@/lib/supabase-browser";
+import type { RoomMessage } from '@/types/rooms';
+
+>>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4
 interface Props {
   roomId: string;
   currentUser: string;
   initialMessages: RoomMessage[];
 }
 
+<<<<<<< HEAD
 export default function MessageFeed({ roomId, currentUser, initialMessages }: Props) {
   const [messages, setMessages] = useState<RoomMessage[]>(initialMessages);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   // Scroll to bottom when new messages arrive
+=======
+export default function MessageFeed({ roomId, currentUser, messages, onNewMessages }: Props) {
+  const supabase = supabaseBrowser;
+
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to bottom whenever new messages arrive.
+>>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+<<<<<<< HEAD
   // Supabase Realtime subscription
   useEffect(() => {
     const channel = realtimeClient
@@ -51,6 +68,36 @@ export default function MessageFeed({ roomId, currentUser, initialMessages }: Pr
       realtimeClient.removeChannel(channel);
     };
   }, [roomId]);
+=======
+  // Establish Supabase Realtime subscription
+  useEffect(() => {
+    if (!roomId) return;
+
+    // 🧠 REALTIME SUBSCRIPTION FIX: Utilizes parent scope instance variable to eliminate variable shadowing crashes
+    const channel = supabase
+      .channel(`realtime:room:${roomId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'messages',
+          filter: `room_id=eq.${roomId}` // Assumes your foreign key column is 'room_id'
+        },
+        (payload) => {
+          // Intercept the INSERT event and append the new payload
+          const incomingMessage = payload.new as RoomMessage;
+          onNewMessages([incomingMessage]);
+        }
+      )
+      .subscribe();
+
+    // Explicit cleanup routine to unsubscribe and remove the channel instance
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [roomId, onNewMessages, supabase]);
+>>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4
 
   return (
     <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
@@ -101,4 +148,9 @@ export default function MessageFeed({ roomId, currentUser, initialMessages }: Pr
       <div ref={bottomRef} />
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+
+>>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4

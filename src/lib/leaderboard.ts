@@ -240,6 +240,42 @@ async function fetchCommitStats(username: string, since?: string) {
   }>(`/search/commits?${query}`);
 }
 
+async function fetchAllCommitDatesForStreak(
+  username: string,
+  since: string
+): Promise<string[]> {
+  const PER_PAGE = 100;
+  const seenDays = new Set<string>();
+  let page = 1;
+
+  while (true) {
+    const query = new URLSearchParams({
+      q: `author:${username} author-date:>=${since}`,
+      per_page: String(PER_PAGE),
+      page: String(page),
+      sort: "author-date",
+      order: "desc",
+    });
+
+    const data = await fetchGitHubJson<{
+      total_count: number;
+      items: Array<{ commit: { author: { date: string } } }>;
+    }>(`/search/commits?${query}`);
+
+    if (!data || data.items.length === 0) break;
+
+    for (const item of data.items) {
+      seenDays.add(item.commit.author.date.slice(0, 10));
+    }
+
+    // Stop when we have fetched all available results
+    if (page * PER_PAGE >= data.total_count || data.items.length < PER_PAGE) break;
+    page++;
+  }
+
+  return Array.from(seenDays);
+}
+
 async function fetchPrCount(username: string, since?: string): Promise<number> {
   const query = new URLSearchParams({
     q: [
@@ -284,15 +320,13 @@ export async function buildLeaderboard(
     safeUsers,
     USER_CONCURRENCY,
     async (user) => {
-      const [monthlyCommits, streakCommits, prs] = await Promise.all([
+      const [monthlyCommits, streakDates, prs] = await Promise.all([
         fetchCommitStats(user.github_login, periodStart),
-        fetchCommitStats(user.github_login, streakStart),
+        fetchAllCommitDatesForStreak(user.github_login, streakStart),
         fetchPrCount(user.github_login, periodStart),
       ]);
 
-      const streak = calculateCurrentStreak(
-        streakCommits?.items.map((item) => item.commit.author.date) ?? []
-      );
+      const streak = calculateCurrentStreak(streakDates);
       const commits = monthlyCommits?.total_count ?? 0;
       const score = streak * 5 + commits + prs * 3;
 
@@ -339,12 +373,49 @@ export async function refreshLeaderboardCache(
   return payload;
 }
 
+<<<<<<< HEAD
+=======
+export const getCachedLeaderboard = (filters: LeaderboardFilters = {}) => {
+  const period = filters.period ?? DEFAULT_PERIOD;
+  return unstable_cache(
+    async () => buildLeaderboard(filters),
+    ["leaderboard", period],
+    {
+      revalidate: CACHE_REFRESH_SECONDS,
+      tags: ["leaderboard"],
+    }
+  )();
+};
+
+>>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4
 export async function getLeaderboardData(
   bypass = false,
   filters: LeaderboardFilters = {}
 ): Promise<LeaderboardPayload | null> {
   const period = filters.period ?? DEFAULT_PERIOD;
+<<<<<<< HEAD
   if (!bypass) {
+=======
+
+  if (bypass) {
+    try {
+      const payload = await buildLeaderboard(filters);
+      const cacheKey = getLeaderboardCacheKey(period);
+      await cacheSet(cacheKey, payload, CACHE_STALE_SECONDS);
+      setMemoryCachedLeaderboard(payload, period);
+      return payload;
+    } catch (err) {
+      console.error("[Leaderboard] Build failed:", err);
+      return null;
+    }
+  }
+
+  try {
+    return await getCachedLeaderboard(filters);
+  } catch (err) {
+    console.error("[Leaderboard] unstable_cache failed, falling back to custom cache:", err);
+
+>>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4
     const mem = getMemoryCachedLeaderboard(period);
     if (mem) return mem;
 

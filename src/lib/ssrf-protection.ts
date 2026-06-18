@@ -33,7 +33,36 @@ export async function isSafeUrl(url: string): Promise<boolean> {
     }
 
     const hostname = parsed.hostname;
+<<<<<<< HEAD
     if (hostname === "localhost" || hostname === "0.0.0.0") {
+=======
+    let ipToCheck = hostname;
+    if (ipToCheck.startsWith("[") && ipToCheck.endsWith("]")) {
+      ipToCheck = ipToCheck.slice(1, -1);
+    }
+
+    // Block localhost/unspecified/loopback hostnames before DNS resolution
+    if (hostname === "localhost" || ipToCheck === "0.0.0.0" || ipToCheck === "::1") {
+      return false;
+    }
+
+    if (net.isIP(ipToCheck)) {
+      return !isPrivateIP(ipToCheck);
+    }
+
+    const addresses: string[] = [];
+
+    try {
+      const lookupResults = await dns.lookup(hostname, { all: true });
+      if (Array.isArray(lookupResults)) {
+        addresses.push(...lookupResults.map((r) => r.address));
+      }
+    } catch {
+      return false;
+    }
+
+    if (addresses.length === 0) {
+>>>>>>> 9af3a534735a3ac3d412933eec41fa59c7cc73e4
       return false;
     }
 

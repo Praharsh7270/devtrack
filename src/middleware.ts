@@ -31,7 +31,12 @@ const WINDOW_SECONDS = 60;
 const AUTHENTICATED_LIMIT = isDev ? 5000 : 60;
 const ANONYMOUS_LIMIT = isDev ? 1000 : 10;
 
-const memoryBuckets = new Map<string, number[]>();
+// Warn in production if Upstash Redis is not configured (rates reset on cold starts)
+if (process.env.NODE_ENV === "production" && !process.env.UPSTASH_REDIS_REST_URL) {
+  console.warn(
+    "UPSTASH_REDIS_REST_URL is not set – rate limits will use in-memory storage and reset on cold starts."
+  );
+}
 
 type RateLimitResult = {
   allowed: boolean;
@@ -64,6 +69,13 @@ function buildHeaders(result: RateLimitResult) {
 
   return headers;
 }
+
+/**
+ * In-memory sliding-window rate-limit store.
+ * Each key maps to an array of request timestamps (milliseconds).
+ * Entries are pruned once the map exceeds 500 keys.
+ */
+const memoryBuckets = new Map<string, number[]>();
 
 function pruneMemoryBuckets(now: number) {
   if (memoryBuckets.size < 500) {
